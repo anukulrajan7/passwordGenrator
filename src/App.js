@@ -5,6 +5,8 @@ function App() {
   const [numberAllowed, setNumberAllowed] = useState(false);
   const [characterAllowed, setCharacterAllowed] = useState(false);
   const [password, setPassword] = useState('');
+  const [smallCase,setSmallCaseAllowed] = useState(false);
+  const [captalize,setCaptalizeAllowed] = useState(false)
   const passwordRef = useRef(null);
 
   const copyToClipboard = useCallback(() => {
@@ -17,16 +19,18 @@ function App() {
     let str = 'abcdefghijklmnopqrstuvwxyz';
     if (numberAllowed) str += '0123456789';
     if (characterAllowed) str += '!@#$%^&*';
+    if(captalize) str+= str.toUpperCase();
+    if(smallCase) str+= str.toLowerCase();
     for (let i = 1; i <= length; i++) {
       let randomChar = Math.floor(Math.random() * str.length);
       pass += str[randomChar];
     }
     setPassword(pass);
-  }, [length, setPassword, numberAllowed, characterAllowed]);
+  }, [length, setPassword, numberAllowed, characterAllowed,smallCase,captalize]);
 
   useEffect(() => {
     passwordGenerator();
-  }, [passwordGenerator, characterAllowed, numberAllowed]);
+  }, [passwordGenerator, characterAllowed, numberAllowed,smallCase,captalize]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-500 via-pink-500 to-red-500">
@@ -38,7 +42,7 @@ function App() {
               type="text"
               value={password}
               readOnly
-              className=" bg-transparent outline-none"
+              className={`bg-transparent w-[80%] outline-none ${password.length>14?"text-red-400":"text-black"}`}
               ref={passwordRef}
             />
             <button
@@ -60,6 +64,28 @@ function App() {
               onChange={(e) => setLength(e.target.value)}
               className="w-full"
             />
+          </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="smallcase"
+              id="smallcase"
+              checked={smallCase}
+              onChange={() => setSmallCaseAllowed(!smallCase)}
+              className="mr-2"
+            />
+            <label className="text-white">Small case</label>
+          </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="number"
+              id="number"
+              checked={captalize}
+              onChange={() => setCaptalizeAllowed(!captalize)}
+              className="mr-2"
+            />
+            <label className="text-white">Captalize</label>
           </div>
           <div className="flex items-center">
             <input
